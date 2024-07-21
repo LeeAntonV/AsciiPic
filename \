@@ -1,0 +1,50 @@
+package main
+
+import (
+	"fmt"
+	"image/jpeg"
+	"log"
+	"os"
+)
+
+func main() {
+    //asc := []string{"@", "$", "%", "&", "*", "/", "#"}
+
+    file, err := os.Open("bart.jpg")
+    defer file.Close()
+
+    if err != nil{
+        log.Fatal(err)
+    }
+
+    image, err := jpeg.Decode(file)
+
+    if err != nil{
+        log.Fatal(err)
+    }
+
+    bounds := image.Bounds()
+    width, height := bounds.Max.X, bounds.Max.Y
+
+    file = os.Open("bart.txt")
+    for x := 0; x < width; x++{
+        for y := 0; y < height; y++{
+            color := image.At(x,y)
+
+            r, g, b, a := color.RGBA()
+
+            rByte := byte(r >> 8)
+            gByte := byte(g >> 8)
+            bByte := byte(b >> 8)
+            aByte := byte(a >> 8)
+
+            if rByte == byte(1) && gByte == byte(1) && bByte == byte(1) && aByte == byte(255){
+                fmt.Print("/")
+
+            }
+        }
+
+        fmt.Println()
+    }
+}
+
